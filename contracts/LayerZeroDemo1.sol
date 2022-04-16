@@ -19,7 +19,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
     // instance variables
     ILayerZeroEndpoint public endpoint; // where message will be received from
     uint16 public messageCount;
-    byes public message;
+    bytes public message;
 
     // constructor
     constructor(address _endpoint) {
@@ -30,7 +30,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
     function sendMsg(
         uint16 _dstChainId,
         bytes calldata _destination,
-        bytes calldata payload,
+        bytes calldata payload
     ) public payable {
         endpoint.send{value: msg.value}(
             _dstChainId,
@@ -57,7 +57,7 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
             keccak256(abi.encodePacked((_payload))) == 
             keccak256(abi.encodePacked((bytes10("ff"))))
         ) {
-            endpoint.receivePayLoad(
+            endpoint.receivePayload(
                 1,
                 bytes(""),
                 address(0x0),
@@ -68,19 +68,19 @@ contract LayerZeroDemo1 is ILayerZeroReceiver {
         }
 
         // update instance variables
-        message = _payload
-        messageCount += 1
-        emit ReceiveMsg(_srcChainId, from, messageCount, message)
+        message = _payload;
+        messageCount += 1;
+        emit ReceiveMsg(_srcChainId, from, messageCount, message);
     }
 
-    function estimateFees( // estimates fees for the message
+    function estimateFees(
         uint16 _dstChainId,
         address _userApplication,
         bytes calldata _payload,
         bool _payInZRO,
         bytes calldata _adapterParams
     ) external view returns (uint256 nativeFee, uint256 zroFee) {
-        return endpoint.estimateFees(
+        return endpoint.estimateFees( // endpoint.estimateFees() returns the fees for the message
             _dstChainId,
             _userApplication,
             _payload,
